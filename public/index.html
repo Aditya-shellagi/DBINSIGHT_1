@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7fb">
+  <meta name="description" content="Ask questions about your employee database and inspect safe, read-only SQL results.">
+  <title>InsightSQL — Ask your data</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Workspace navigation">
+      <a class="brand" href="/" aria-label="InsightSQL home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-copy"><strong>InsightSQL</strong><small>DATA WORKSPACE</small></span>
+      </a>
+
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <button class="nav-link active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.75A1.75 1.75 0 0 1 5.75 4h12.5A1.75 1.75 0 0 1 20 5.75v8.5A1.75 1.75 0 0 1 18.25 16H13l-4.6 3.3c-.58.42-1.4 0-1.4-.72V16h-1.25A1.75 1.75 0 0 1 4 14.25z"/></svg>
+          <span>Ask data</span><span class="nav-dot"></span>
+        </button>
+        <button class="nav-link" id="schema-toggle" type="button" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-6M4.5 11.5v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-6"/></svg>
+          <span>Data schema</span>
+        </button>
+      </nav>
+
+      <div class="history-heading">
+        <div class="workspace-label">RECENT QUESTIONS</div>
+        <button class="icon-button subtle" id="clear-history" type="button" title="Clear local history" aria-label="Clear local history">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+        </button>
+      </div>
+      <div class="history-list" id="history-list" aria-live="polite"></div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <div class="privacy-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg></div>
+        <div><strong>Private by design</strong><span>Queries stay on this device</span></div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Workspace</span><span class="crumb-separator">/</span><strong>Ask data</strong></div>
+        <div class="topbar-right">
+          <div class="database-chip"><span class="connection-dot"></span><span>employee_management.db</span><span class="readonly-pill">READ ONLY</span></div>
+          <button class="avatar" type="button" aria-label="Local workspace">IS</button>
+        </div>
+      </header>
+
+      <section class="content-area">
+        <div class="hero-heading">
+          <div class="eyebrow"><span class="sparkle">✳</span> YOUR DATA, IN PLAIN LANGUAGE</div>
+          <h1>Ask your data<span class="heading-period">.</span></h1>
+          <p>Explore your employee database with a question. Every query is read-only and the SQL stays visible.</p>
+        </div>
+
+        <section class="composer-card" aria-labelledby="question-label">
+          <div class="composer-topline"><label id="question-label" for="question-input">What would you like to know?</label><span class="secure-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3m-11 0h12a2 2 0 0 1 2 2v8H4v-8a2 2 0 0 1 2-2Z"/></svg> Read-only</span></div>
+          <textarea id="question-input" rows="3" maxlength="500" placeholder="e.g. Show me the employees in Finance" aria-describedby="input-hint"></textarea>
+          <div class="composer-footer">
+            <span id="input-hint" class="input-hint">Natural language in. Safe SQL out.</span>
+            <div class="composer-actions"><span class="keyboard-hint">Ctrl <kbd>↵</kbd></span><button class="ask-button" id="ask-button" type="button"><span class="ask-button-label">Ask InsightSQL</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button></div>
+          </div>
+        </section>
+
+        <div class="suggestion-row" aria-label="Example questions">
+          <span class="suggestion-label">TRY ASKING</span>
+          <button class="suggestion-chip" type="button" data-question="Show employees in Finance">Employees in Finance</button>
+          <button class="suggestion-chip" type="button" data-question="Show average salary by department">Average salary by department</button>
+          <button class="suggestion-chip" type="button" data-question="List active projects">Active projects</button>
+          <button class="suggestion-chip" type="button" data-question="Show employee assignments by project">Project assignments</button>
+        </div>
+
+        <section class="schema-panel hidden" id="schema-panel" aria-label="Database schema">
+          <div class="section-header"><div><div class="section-kicker">CONNECTED DATABASE</div><h2>Data schema</h2></div><span class="schema-status"><span class="connection-dot"></span> Connected</span></div>
+          <p class="schema-description">InsightSQL can query these tables using read-only SELECT statements.</p>
+          <div class="schema-grid">
+            <article class="schema-table"><div class="schema-table-title"><span class="table-glyph">▦</span> departments <span class="field-count">4 fields</span></div><p>department_id · department_name · location · budget</p></article>
+            <article class="schema-table"><div class="schema-table-title"><span class="table-glyph">▦</span> employees <span class="field-count">10 fields</span></div><p>employee_id · department_id · first_name · last_name · email · job_title · salary · hire_date · manager_id · phone</p></article>
+            <article class="schema-table"><div class="schema-table-title"><span class="table-glyph">▦</span> projects <span class="field-count">7 fields</span></div><p>project_id · project_name · description · start_date · end_date · status · budget</p></article>
+            <article class="schema-table"><div class="schema-table-title"><span class="table-glyph">▦</span> employee_projects <span class="field-count">5 fields</span></div><p>employee_id · project_id · project_role · assigned_on · allocation_pct</p></article>
+          </div>
+        </section>
+
+        <section class="response-area" id="response-area" aria-live="polite" aria-busy="false">
+          <div class="welcome-state" id="welcome-state">
+            <div class="welcome-visual" aria-hidden="true"><div class="visual-orbit orbit-one"></div><div class="visual-orbit orbit-two"></div><div class="visual-core"><span class="core-line line-one"></span><span class="core-line line-two"></span><span class="core-line line-three"></span><span class="core-spark">✦</span></div><span class="float-dot dot-a"></span><span class="float-dot dot-b"></span><span class="float-dot dot-c"></span></div>
+            <h2>Your next insight is one question away</h2>
+            <p>Start with a suggestion above, or ask about employees, departments, salaries, projects, and assignments.</p>
+            <div class="capability-row"><span><i></i> SELECT only</span><span><i></i> Local SQLite</span><span><i></i> SQL always visible</span></div>
+          </div>
+          <div class="loading-state hidden" id="loading-state"><span class="loading-spinner"></span><div><strong>Working through your question</strong><p>Generating and checking a read-only query…</p></div></div>
+          <div class="error-card hidden" id="error-card" role="alert"><div class="error-icon">!</div><div><strong id="error-title">Could not answer that</strong><p id="error-message"></p></div></div>
+          <div class="result-view hidden" id="result-view">
+            <div class="result-heading"><div><div class="section-kicker">QUERY RESULT</div><h2 id="result-title">Results</h2><p id="result-description"></p></div><div class="result-metrics"><span class="result-count" id="result-count"></span><span class="result-duration" id="result-duration"></span></div></div>
+            <section class="sql-card" aria-labelledby="sql-heading"><div class="card-heading"><div class="card-heading-left"><span class="code-icon">{ }</span><div><h3 id="sql-heading">Generated SQL</h3><p>Validated · Read-only SELECT</p></div></div><button class="copy-button" id="copy-sql" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copy SQL</span></button></div><pre class="sql-block"><code id="sql-output"></code></pre><div class="parameter-line hidden" id="parameter-line"><span>PARAMETERS</span><code id="parameter-output"></code></div></section>
+            <section class="table-card" aria-labelledby="table-heading"><div class="table-card-heading"><div><h3 id="table-heading">Data</h3><p id="table-caption"></p></div><span class="table-result-icon">▤</span></div><div class="table-scroll" id="table-scroll"></div><div class="empty-result hidden" id="empty-result"><span class="empty-result-icon">⌕</span><strong>No matching records</strong><span>Try changing a filter or asking a broader question.</span></div><div class="result-footnote hidden" id="result-footnote">Showing the first 100 rows.</div></section>
+          </div>
+        </section>
+        <footer class="main-footer"><span>InsightSQL works locally with your SQLite database.</span><span class="footer-lock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3m-11 0h12a2 2 0 0 1 2 2v8H4v-8a2 2 0 0 1 2-2Z"/></svg> Your data never leaves this device</span></footer>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

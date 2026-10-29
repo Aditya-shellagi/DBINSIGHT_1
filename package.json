@@ -1,0 +1,17 @@
+{
+  "name": "insightsql",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local, read-only natural-language analytics for the employee management SQLite database.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3"
+  }
+}
